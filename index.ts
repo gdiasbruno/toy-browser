@@ -1,5 +1,26 @@
+import net from "net"
+
 const request = (url: string) => {
-    const [scheme]
+    const [protocol, rest] = url.split("/")[0]
+    let [host, path] = rest.split("/")
+    path = "/" + path
+
+    const socket = new net.Socket()
+
+    socket.connect(80, "example.org", () => {
+        console.log("Connected")
+
+        socket.write(`GET ${path} HTTP/1.1\r\n`)
+    })
+
+    socket.on('data', (data) => {
+        console.log(`Received data from server: ${data}`);
+      });
+      
+    socket.on('close', () => {
+        console.log('Connection closed.');
+    });
+
     return ["headers", "body"]
 }
 
