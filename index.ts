@@ -2,24 +2,21 @@ import net from "net"
 
 const request = (url: string): Promise<string[]> => {
     return new Promise((resolve, reject) => {
-        const [protocol, rest] = url.split("/")[0]
-        console.log(rest)
+        const [protocol, rest] = url.split("//")
         let [host, path] = rest.split("/")
         path = "/"
-        let result;
-
+        let result: string;
         const socket = new net.Socket()
 
-        socket.connect(80, "example.org", () => {
+        socket.connect(80, host, () => {
             console.log("Connected")
-            console.log(`GET ${path} HTTP/1.1\r\nHost: ${"example.org"}\r\n\r\n`)
 
             socket.write(`GET ${path} HTTP/1.1\r\nHost: ${"example.org"}\r\n\r\n`);
         })
 
         socket.on('data', (data) => {
-            console.log(`Received data from server: ${data}`);
             result += data
+            socket.end()
         });
         
         socket.on('close', () => {
@@ -34,7 +31,8 @@ const request = (url: string): Promise<string[]> => {
 
         socket.on('end', () => {
             console.log('Socket ended');
-            resolve(["headers", result])
+            const [headers, body] = result.split("\r\n\r\n")
+            resolve([headers, body])
         })
     })
 
