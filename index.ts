@@ -40,7 +40,16 @@ const request = (url: string): Promise<string[]> => {
 }
 
 const show = (body: string) => {
-    console.log("BODY: " + body)
+    let in_angle = false
+    for (let i = 0; i < body.length; i++) {
+        if (body[i] == "<") {
+            in_angle = true
+        } else if (body[i] == ">") {
+            in_angle = false
+        } else if (!in_angle) {
+            process.stdout.write(body[i])
+        }
+    }
 }
 
 const load = async (url: string) => {
