@@ -1,2 +1,2 @@
 # TOY BROWSER
-## folowwing the book: https://browser.engineering/
+## following the book: https://browser.engineering/
